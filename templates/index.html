@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查询水电费</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style type="text/css">
+        .bod1 {
+            background: #aa4b6b;
+            background: -webkit-linear-gradient(to right, #3b8d99, #6b6b83, #aa4b6b);
+            background: linear-gradient(to right, #3b8d99, #6b6b83, #aa4b6b);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            position: relative;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .notification-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .search-box {
+            background: #FD2C6B;
+            height: auto;
+            border-radius: 30px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin-top: 60px;
+        }
+        .search-btn {
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #FD2C6B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+            cursor: pointer;
+            margin: 10px auto;
+        }
+        .search-btn:hover {
+            background: white;
+            color: #26087b;
+        }
+        .search-text {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            font-size: 20px;
+            color: white;
+            background: none;
+            transition: 0.5s;
+            text-align: center;
+        }
+        .search-text::placeholder {
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .wechat-icon, .support-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 2em;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .wechat-icon {
+            right: 80px;
+        }
+        .wechat-icon:hover, .support-btn:hover {
+            transform: scale(1.2);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .modal.show .modal-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .modal .content {
+            text-align: left;
+            color: black;
+        }
+        .result-info {
+            font-size: 14px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .table-container {
+            display: none;
+        }
+        .update-log-modal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .update-log-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .update-log-modal.show .update-log-modal-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .close-update-log {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-update-log:hover,
+        .close-update-log:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bod1">
+    <div class="notification-bar">
+        本项目从7月7日开始运行，目前只支持文缘宿舍区，本查询记录仅供参考。
+    </div>
+    <div class="search-box">
+        <h1 style="color:white;">查询水电费</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="building">楼号:</label>
+                <input type="text" id="building" name="building" required>
+            </div>
+            <div class="form-group">
+                <label for="unit_number">门牌号:</label>
+                <input type="number" id="unit_number" name="unit_number" required>
+            </div>
+            <button type="submit" class="search-btn">查询</button>
+        </form>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if results %}
+        <div class="result-info">
+            查询结果 (楼号: {{ building }} 门牌号: {{ unit_number }})
+        </div>
+        <div id="chart-container">
+            <canvas id="balanceChart" width="400" height="200"></canvas>
+        </div>
+        <div id="table-container" class="table-container">
+            <table>
+                <tr>
+                    <th>日期</th>
+                    <th>余额</th>
+                </tr>
+                {% for row in results %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button id="toggleBtn">切换显示方式为表格</button>
+        {% endif %}
+    </div>
+    <i class="fab fa-weixin wechat-icon" id="wechatIcon"></i>
+    <i class="fas fa-heart support-btn" id="supportBtn"></i>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeBtn">&times;</span>
+            <img src="/static/weixin.jpg" alt="WeChat QR Code">
+        </div>
+    </div>
+    <div id="supportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeSupportBtn">&times;</span>
+            <div class="content">
+                <h2>赞赏</h2>
+                <p>如果您觉得我做的对您有用，可以赞赏我。您的赞赏是我开发的最大动力。</p>
+                <img src="/static/qr_code.jpg" alt="QR Code for donation">
+                <h3>待更新或已更新目标（画饼）</h3>
+                <ul>
+                    <li>查询结果可视化，以图表形式直观显示</li>
+                    <li>除文缘宿舍区外的其他西浦学生宿舍区水电费历史查询</li>
+                    <li>安卓APK软件制作</li>
+                    <li>慧湖通二维码生成(有违规风险暂时不上线)</li>
+                    <li>如有任何改进建议或其他服务需求，请随时联系我。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="updateLogModal" class="update-log-modal">
+        <div class="update-log-modal-content">
+            <span class="close-update-log" id="closeUpdateLogBtn">&times;</span>
+            <h2>更新日志</h2>
+            <ul>
+                <li>修复了一些已知问题，提升了系统稳定性。</li>
+                <li>优化了查询速度，现在查询结果返回更快。</li>
+                <li>增加了查询结果的图表展示功能。</li>
+                <li>图片显示最近5天的数据，表格显示最近10天的数据。</li>
+                <li>本地数据会一直保存，如果需要查询大范围数据，加我微信无偿查询</li>
+            </ul>
+        </div>
+    </div>
+    <div id="initialModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeInitialModalBtn">&times;</span>
+            <div class="content">
+                <h2>更新日志V2.0</h2>
+                <Li>慧湖通于7月17日上午添加反爬虫机制并且拉黑当前使用的服务器ip</Li>
+                <Li>7月17日晚上5点更新反制功能，维持数据基本正常获取，如果您的宿舍数据不正确请联系我</Li>
+                <Li>拉黑ip速度太快，目前成本太高，暂时不知道还能坚持运行多久</Li>
+		<h2>更新日志V3.0</h2>
+		<Li>慧湖通于7月19日到20日之间又更新反爬虫机制</Li>
+		<Li>已更新新版反制机制</Li>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.0.1"></script>
+    <script>
+        function initializeEvents() {
+            var modal = document.getElementById("myModal");
+            var supportModal = document.getElementById("supportModal");
+            var wechatIcon = document.getElementById("wechatIcon");
+            var supportBtn = document.getElementById("supportBtn");
+            var closeBtn = document.getElementById("closeBtn");
+            var closeSupportBtn = document.getElementById("closeSupportBtn");
+            var toggleBtn = document.getElementById("toggleBtn");
+            var chartContainer = document.getElementById("chart-container");
+            var tableContainer = document.getElementById("table-container");
+
+            var updateLogModal = document.getElementById("updateLogModal");
+            var closeUpdateLogBtn = document.getElementById("closeUpdateLogBtn");
+
+            var initialModal = document.getElementById("initialModal");
+            var closeInitialModalBtn = document.getElementById("closeInitialModalBtn");
+
+            wechatIcon.addEventListener("click", function() {
+                modal.style.display = "flex";
+                setTimeout(function() {
+                    modal.classList.add('show');
+                }, 10);
+            });
+            
+            supportBtn.addEventListener("click", function() {
+                supportModal.style.display = "flex";
+                setTimeout(function() {
+                    supportModal.classList.add('show');
+                }, 10);
+            });
+
+            closeBtn.addEventListener("click", function() {
+                modal.classList.remove('show');
+                setTimeout(function() {
+                    modal.style.display = "none";
+                }, 500);
+            });
+
+            closeSupportBtn.addEventListener("click", function() {
+                supportModal.classList.remove('show');
+                setTimeout(function() {
+                    supportModal.style.display = "none";
+                }, 500);
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target == modal) {
+                    modal.classList.remove('show');
+                    setTimeout(function() {
+                        modal.style.display = "none";
+                    }, 500);
+                }
+                if (event.target == supportModal) {
+                    supportModal.classList.remove('show');
+                    setTimeout(function() {
+                        supportModal.style.display = "none";
+                    }, 500);
+                }
+            });
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener("click", function() {
+                    console.log('Toggle button clicked');
+                    if (chartContainer.style.display === "none" || chartContainer.style.display === "") {
+                        chartContainer.style.display = "block";
+                        tableContainer.style.display = "none";
+                        toggleBtn.textContent = "切换显示方式为表格";
+                    } else {
+                        chartContainer.style.display = "none";
+                        tableContainer.style.display = "block";
+                        toggleBtn.textContent = "切换显示方式为折线图";
+                    }
+                });
+            }
+
+            // Close the update log modal
+            closeUpdateLogBtn.addEventListener("click", function() {
+                updateLogModal.classList.remove('show');
+                setTimeout(function() {
+                    updateLogModal.style.display = "none";
+                }, 500);
+                localStorage.setItem('updateLogSeen', 'true');
+            });
+
+            // Show the initial modal on page load if no results are present
+            if (!document.querySelector('.result-info')) {
+                initialModal.style.display = "flex";
+                setTimeout(function() {
+                    initialModal.classList.add('show');
+                }, 10);
+            }
+
+            // Close the initial modal
+            closeInitialModalBtn.addEventListener("click", function() {
+                initialModal.classList.remove('show');
+                setTimeout(function() {
+                    initialModal.style.display = "none";
+                }, 500);
+            });
+
+            // Check if the update log has been seen
+            if (!localStorage.getItem('updateLogSeen')) {
+                updateLogModal.style.display = "flex";
+                setTimeout(function() {
+                    updateLogModal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEvents();
+        });
+    </script>
+    {% if results %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var rawData = [{% for row in results %} { date: "{{ row[0] }}", balance: {{ row[1] }} }, {% endfor %}];
+
+            // 只保留最近的5天数据
+            var last5DaysData = rawData.slice(-5);
+
+            var dates = last5DaysData.map(item => item.date);
+            var balances = last5DaysData.map(item => item.balance);
+
+            var ctx = document.getElementById('balanceChart').getContext('2d');
+            var balanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: '余额',
+                        data: balances,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '余额'
+                            }
+                        }
+                    },
+                    plugins: {
+                        zoom: {
+                            pan: {
+                                enabled: true,
+                                mode: 'x'
+                            },
+                            zoom: {
+                                enabled: true,
+                                mode: 'x'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize the toggle button state
+            chartContainer.style.display = "block";
+            tableContainer.style.display = "none";
+
+            initializeEvents();  // Re-initialize events after chart is loaded
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
