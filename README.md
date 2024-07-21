@@ -29,7 +29,7 @@ proxy = {
 1. Clone the repository:
     
     ```bash
-    git clone https://github.com/yourusername/Wenyuan-water-and-electricity-bills.git
+    git clone https://github.com/expiol/Wenyuan-water-and-electricity-bills.git
     cd Wenyuan-water-and-electricity-bills
     ```
     
