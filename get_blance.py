@@ -1,5 +1,6 @@
 import requests
 import sqlite3
+import os
 from datetime import datetime
 import threading
 import time
@@ -25,6 +26,11 @@ max_retries = 20
 request_timeout = 30
 
 threads = []
+
+# 获取当前脚本的目录
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# 数据库文件路径
+db_path = os.path.join(script_dir, 'balance_data.db')
 
 def get_balance(user_sn, session):
     url = f'https://api.215123.cn/proxy/qy/sdcz/balance?buildingId=328001&userSn={user_sn}'
@@ -85,7 +91,7 @@ def process_building(building):
     print(f"Processing building {building}...")
 
     # 创建数据库连接
-    conn = sqlite3.connect('/root/wenyuan/balance_data.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     for floor in range(2, floors[building] + 1):  # 从第二层开始
@@ -107,7 +113,7 @@ def process_building(building):
 
 def check_and_insert_missing_data():
     # 创建数据库连接
-    conn = sqlite3.connect('/root/wenyuan/balance_data.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     date = datetime.now().strftime('%Y-%m-%d')
