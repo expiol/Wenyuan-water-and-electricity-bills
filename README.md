@@ -78,10 +78,6 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 
 This project is licensed under the Apache-2.0 license.
 
-## Support
 
-If you find this project helpful, consider supporting it by scanning the QR code below:
-
-<img src="static/qr_code.jpg" alt="QR Code" width="200">
 
 ```
